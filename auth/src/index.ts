@@ -4,6 +4,8 @@ import app from "./app";
 import {DatabaseConnectionError} from "@rokufsdev/common"
 
 async function start() {
+  console.log('Starting up...')
+
   if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY must be defined');
   }
