@@ -17,3 +17,8 @@ jobs:
           username: ${{secrets.DOCKERHUB_USERNAME}}
           password: ${{secrets.DOCKERHUB_TOKEN}}
       - run: docker push rokufsd/auth
+      - uses: digitalocean/action-doctl@v2.3.0
+        with:
+          token: ${{secrets.DIGITALOCEAN_ACCESS_TOKEN}}
+      - run: doctl kubernetes cluster kubeconfig save ticketing
+      - run: kubectl rollout restart deployment auth-depl
