@@ -11,5 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3.3.0
       - run: cd auth && docker build -t rokufsd/auth .
-      - run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
+      - name: Login to Docker
+      - uses: docker/login-action@v2
+      - with:
+          username: ${{secrets.DOCKERHUB_USERNAME}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
       - run: docker push rokufsd/auth
