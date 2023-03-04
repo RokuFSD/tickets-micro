@@ -1,0 +1,24 @@
+name: deploy-payments
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'payments/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.3.0
+      - run: cd payments && docker build -t rokufsd/payments .
+      - name: Login to Docker
+        uses: docker/login-action@v2.1.0
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+      - run: docker push rokufsd/payments
+      - uses: digitalocean/action-doctl@v2.3.0
+        with:
+          token: ${{secrets.DIGITALOCEAN_ACCESS_TOKEN}}
+      - run: doctl kubernetes cluster kubeconfig save ticketing
+      - run: kubectl rollout restart deployment payments-depl
